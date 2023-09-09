@@ -1,6 +1,14 @@
 <div class="row my-5">
     <div class="col">
         <h1 class="text-center">도서검색</h1>
+        <div class="row justify-content-end">
+            <form class="col-6 col-md-4 col-lg-3" name="frm">
+                <div class="input-group">
+                    <input class="form-control" placeholder="검색어" name="query">
+                    <button class="btn btn-primary">검색</button>
+                </div>
+            </form>
+        </div>
 
         <div id="div_books"></div>
     </div>
@@ -20,16 +28,27 @@
 </script>
 
 <script>
-    getBooks()
+    $(frm).on("submit", function(e){
+        e.preventDefault();//submit 이벤트 막아줌
+        query=$(frm.query).val();
+        if(query=="") {
+            alert("검색 내용을 입력하세요!");
+            $(frm.query).focus();
+        }else{
+            page=1;
+            getBooks();
+        }
+    });
+
+  
 
     //도서검색 목록 가져오기
     function getBooks(){
-
         $.ajax({
             type:"GET",
             url:"https://dapi.kakao.com/v3/search/book?target=title",
             headers:{"Authorization" : "KakaoAK 9b9ea4028cdd11f379514e1e7cf7dbb2"},
-            data:{query:'자바', page : 1, size : 5},
+            data:{query : query, page : page, size : 5},
             success:function(data) {
                 console.log(data)
                 let temp=Handlebars.compile($("#temp_books").html());
