@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* 도서관리 page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: '도dd서dddd관ddddd리', name : "홍길ffdd동" });
+  res.render('index', { title: '도서검색' , pageName : "books/search.ejs" });
 });
 
 module.exports = router;
