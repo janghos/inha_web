@@ -10,6 +10,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase
 const firebaseConfig = {
 apiKey: "AIzaSyBC8M1YTCqC8zrfzftMBZXdQudPTCvD4-g",
 authDomain: "inhaweb-7ec64.firebaseapp.com",
+databaseURL: "https://inhaweb-7ec64-default-rtdb.firebaseio.com",
 projectId: "inhaweb-7ec64",
 storageBucket: "inhaweb-7ec64.appspot.com",
 messagingSenderId: "264197381913",

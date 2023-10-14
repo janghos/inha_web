@@ -40,7 +40,7 @@
             <div class="ellipsis pt-3" style="font-size:0.8rem;">{{title}}</div>
             </div>
             <div class="card-footer" style="font-size:0.8rem;">{{format price}}
-                <i class="bi bi-cart-fill" book="{{book @this}}"></i>
+                <i class="cart bi bi-cart-fill" book="{{book @this}}"></i>
             </div>
         </div>
     </div>
@@ -65,20 +65,59 @@
     })
 </script>
 
-<script>
+<script type="module">
+    //type = "module" <- 시험문제 import 필요
+    import {app} from "/javascripts/firebase.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+    const db = getDatabase(app)// 시험문제 매개변수 app
+   
+
+
     let query=$(frm.query).val();
     let page=1;
     getBooks();
 
-    //장바구니 클릭한 경우
-    $("#div_books").on("click", ".bi", function(){
-        if(!sessionStorage.getItem("email")){
-            location.href="/users/login"
-        } else {
-            const book = $(this).attr("book")
-            console.log(book);
+    //장바구니 아이콘을 클릭한 경우 도서 검색결과 안에 .cart클래스 (시험문제 div_books는 결과창)
+    $("#div_books").on("click", ".cart", async function(){
+
+
+        if(!sessionStorage.getItem("uid")){
+            location.href = "users/login";
+            return
         }
+
+        
+        //장바구니 있는지 체크
+        //시험 문제 attr 속성 가져옴 .cart클래스 안의 속성에서 (this)
+        const book = JSON.parse($(this).attr("book"));
+        const ref_cart = ref(db, `cart/${sessionStorage.getItem("uid")}/${book.isbn}`);
+        
+        const result = await get(ref_cart);
+        console.log(result.val());
+
+        if(result.val()){
+            alert("이미 장바구니 있어");
+
+            return;
+        }
+        
+        if(!confirm("장바구니 추가할거임?")) return;
+        
+        set(ref_cart, book);
+
+        alert("장바구니 추가 완료~");
     })
+
+    // //장바구니 클릭한 경우
+    // $("#div_books").on("click", ".bi", function(){
+    //     if(!sessionStorage.getItem("email")){
+    //         location.href="/users/login"
+    //     } else {
+    //         const book = $(this).attr("book")
+    //         console.log(book);
+    //     }
+    // })
 
     //이미지를 클릭한 경우
     $("#div_books").on("click", "img" , function(){
