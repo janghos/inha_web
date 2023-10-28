@@ -29,15 +29,52 @@
                 <td>{{address_name}}</td>
                 <td>{{phone}}</td>
                 <td><button class="btn btn-primary" x="{{x}}" y= "{{y}}">위치보기</button></td>
+                <td><button class="btn btn-primary btn-sm favorite" local="{{@toString this}}">즐겨찾기</button></td>
             </tr>
         {{/each}}
     </table>
 </script>
+
 <script>
+                                //함수 이름 toString
+    Handlebars.registerHelper("toString", function(local) {    
+        return JSON.stringify(local);
+    })
+    </script>
+<script type="module">
+    //type = "module" <- 시험문제 import 필요
+    import {app} from "/javascripts/firebase.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+    const db = getDatabase(app)// 시험문제 매개변수 app
+   
     let query = $(frm.query).val();
     let page = 1;
     let size = 5;
     getLocals();
+
+    //즐겨찾기 버튼 클릭                       //시험문제 기말고사 async
+    $("#div_locals").on("click", ".favorite", async function() {
+        if(sessionStorage.getItem("email")) {
+            const locals=JSON.parse($(this).attr("local"))
+            
+
+            const ref_favorite = ref(db, `favorite/${sessionStorage.getItem("uid")}/${locals.id}`)
+                             //시험문제 기말 고사 await 
+            const snapshot = await get(ref_favorite)
+            if(snapshot.val()) {
+                alert("이미 즐겨찾기 목록에 있습니다.") 
+            } else {
+                set(ref_favorite, locals)
+                alert("즐겨찾기에 등록되었습니다.")
+            }
+
+        
+        } else {
+            sessionStorage.setItem("target", "/locals");
+            location.href = "/users/login";
+        }
+    })
 
     $("#div_locals").on("click","button", function(){
         let x = $(this).attr("x");
