@@ -60,6 +60,7 @@
 
             if(sessionStorage.getItem("target")){
                 location.href = sessionStorage.getItem("target")
+                sessionStorage.setItem("target", "/")
             
                 return
             }
