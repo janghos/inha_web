@@ -15,4 +15,9 @@ router.get('/read', function(req, res, next) {
   res.render('index', { title: '게시글 정보', pageName : 'posts/read.ejs', id});
 });
 
+router.get('/update', function(req, res) {
+  const id=req.query.id;
+  res.render('index', { title: '게시글 수정', pageName :'posts/update.ejs', id:id });
+});
+
 module.exports = router;
